@@ -24,13 +24,19 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     switch ((esp_mqtt_event_id_t)event_id)
     {
     case MQTT_EVENT_CONNECTED:
-        ESP_LOGI(TAG1, "MQTT CONECTADO COM SUCESSO");
+        ESP_LOGI(TAG1, "MQTT CONECTADO COM SUCESSO ");
+        lcdClear();
+        vTaskDelay(500);
+        lcdWrite(1, 0, "MQTT CONECTADO ");
         MQTT_CONNEECTED=1;
         msg_id = esp_mqtt_client_subscribe(client, "/testVyni/read", 2);
         ESP_LOGI(TAG1, "Mensagem enviada com sucesso, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG1, "MQTT DESCONECTADO");
+        lcdClear();
+        vTaskDelay(500);
+        lcdWrite(1, 0, "MQTT DESCONECTADO ");
         MQTT_CONNEECTED=0;
         break;
     case MQTT_EVENT_SUBSCRIBED:
@@ -44,10 +50,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_DATA:
         char *recebido = "";
-        lcdWrite(1, 0, recebido);
+        lcdClear();
         ESP_LOGI(TAG1, "MENSAGEM RECEBIDA=%.*s\r\n", event->data_len, event->data);
         recebido = event->data;
-        //lcdWrite(1, 4, recebido);
+        lcdWrite(0, 2, "MSG RECEBIDA ");
+        lcdWrite(1, 4, recebido);
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG1, "MQTT ERRO!!!");
@@ -64,10 +71,9 @@ static void mqtt_app_start(void)
     ESP_LOGI(TAG1, "Iniciando MQTT");
     esp_mqtt_client_config_t mqttConfig = {
         .broker.address.uri = "mqtt://192.168.1.112",
-        //.broker.address.hostname = "tcc",
         .broker.address.port = 1883,
-        //.credentials.username = "vynizinho",
-        //.credentials.authentication.password = "vini2131",
+        .credentials.username = "vini2131",
+        .credentials.authentication.password = "vini2131",
     };
     client = esp_mqtt_client_init(&mqttConfig);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, client);

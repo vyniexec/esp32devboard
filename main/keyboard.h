@@ -7,11 +7,12 @@
 
 // -- Defininições de variaveis --;
 int coluna, linha, linha2, saidinha = 0;
-unsigned char tecla;
+char tecla = '-';
+char pressionado = '-';
 static const char *TAG = "@vynizinho";
 
 // -- Definindo os valores das teclas --;
-const uint8_t teclas[4][4] =
+const char teclas[4][4] =
 {
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
@@ -24,13 +25,14 @@ void setlinha( void ){
     if( linha <= 1 ) linha = 0b1000;
     else             linha >>= 1;
 }
-unsigned char teclado(void){
+char teclado(void){
     int i;
     gpio_set_level(Teclado_SH, 1);
     coluna = 0;
     for( i = 7; i >= 0; i--){
         if(i < 4){
             if(gpio_get_level(Teclado_RD)== 1){
+                pressionado = '1';
                 coluna = i;
                 if(linha == 1) linha2 = 2;
                 if(linha == 2) linha2 = 3;
@@ -38,6 +40,9 @@ unsigned char teclado(void){
                 if(linha == 8) linha2 = 1;
                 tecla = teclas[linha2][coluna];
                 ESP_LOGI(TAG, "Captura tecla: %c", tecla);
+            }else
+            {
+                pressionado = '-';
             }
         }
         gpio_set_level(Teclado_WR, (linha >> i) & 1);

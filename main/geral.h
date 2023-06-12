@@ -11,17 +11,6 @@
 // -- Inicializando e limpando as portas do teclado --;
 void devboardInit(void)
 {
-  // -- Teclado --;
-  gpio_set_level(Teclado_SH, 0);              // -- Zerando as portas --;
-  gpio_set_level(Teclado_CLK, 0);             // -- Zerando as portas --;
-  gpio_set_level(Teclado_WR, 0);              // -- Zerando as portas --;
-  gpio_set_level(Teclado_RD, 0);              // -- Zerando as portas --;
-  // -- Saídas digitais --;
-  gpio_set_level(IO_SH, 0);                   // -- Zerando as portas --;
-  gpio_set_level(IO_CLK, 0);                  // -- Zerando as portas --;
-  gpio_set_level(IO_WR, 0);                   // -- Zerando as portas --;
-
-
   // -- Resetando os pinos dos registradores --;
   // -- Teclado --;
   gpio_reset_pin(Teclado_SH);                 // -- Resetando todos os pinos a serem usados --;
@@ -33,6 +22,16 @@ void devboardInit(void)
   gpio_reset_pin(IO_CLK);                     // -- Resetando todos os pinos a serem usados --;
   gpio_reset_pin(IO_WR);                      // -- Resetando todos os pinos a serem usados --;
 
+
+  // -- Teclado --;
+  gpio_set_level(Teclado_SH, 0);              // -- Zerando as portas --;
+  gpio_set_level(Teclado_CLK, 0);             // -- Zerando as portas --;
+  gpio_set_level(Teclado_WR, 0);              // -- Zerando as portas --;
+  gpio_set_level(Teclado_RD, 0);              // -- Zerando as portas --;
+  // -- Saídas digitais --;
+  gpio_set_level(IO_SH, 0);                   // -- Zerando as portas --;
+  gpio_set_level(IO_CLK, 0);                  // -- Zerando as portas --;
+  gpio_set_level(IO_WR, 0);                   // -- Zerando as portas --;
 
   // -- Configurandos as portas --;
   // -- Teclado --;
