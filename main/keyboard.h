@@ -28,22 +28,20 @@ void setlinha( void ){
 char teclado(void){
     int i;
     gpio_set_level(Teclado_SH, 1);
-    coluna = 0;
+    coluna = -1;
     for( i = 7; i >= 0; i--){
-        if(i < 4){
-            if(gpio_get_level(Teclado_RD)== 1){
-                pressionado = '1';
-                coluna = i;
-                if(linha == 1) linha2 = 2;
-                if(linha == 2) linha2 = 3;
-                if(linha == 4) linha2 = 0;
-                if(linha == 8) linha2 = 1;
-                tecla = teclas[linha2][coluna];
-                ESP_LOGI(TAG, "Captura tecla: %c", tecla);
-            }else
-            {
-                pressionado = '-';
-            }
+        if(gpio_get_level(Teclado_RD)== 1){
+            pressionado = '1';
+            coluna = i;
+            if(linha == 1) linha2 = 2;
+            if(linha == 2) linha2 = 3;
+            if(linha == 4) linha2 = 0;
+            if(linha == 8) linha2 = 1;
+            tecla = teclas[linha2][coluna];
+            ESP_LOGI(TAG, "Captura tecla: %c", tecla);
+        }else
+        {
+            pressionado = '-';
         }
         gpio_set_level(Teclado_WR, (linha >> i) & 1);
         gpio_set_level(Teclado_CLK, 1);
