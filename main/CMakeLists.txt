@@ -1,2 +1,2 @@
-idf_component_register(SRCS "app_main.c" "somativa.c"
+idf_component_register(SRCS "somativa.c"
                     INCLUDE_DIRS ".")

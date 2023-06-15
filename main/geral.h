@@ -80,7 +80,6 @@ uint8_t io_le_escreve(uint8_t saidas)
     vTaskDelay(10); //vTaskDelay(10 / portTICK_RATE_MS); 
 
     return entradas;
-
 }
 
 
