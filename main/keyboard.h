@@ -8,11 +8,11 @@
 // -- Defininições de variaveis --;
 int coluna, linha, linha2, saidinha = 0;
 char tecla = '-';
-char pressionado = '-';
+int pressionado = 0;
 static const char *TAG = "@vynizinho";
 
 // -- Definindo os valores das teclas --;
-const char teclas[4][4] =
+char teclas[4][4] =
 {
     {'1', '2', '3', 'A'},
     {'4', '5', '6', 'B'},
@@ -22,16 +22,18 @@ const char teclas[4][4] =
 
 // -- Criando a função do teclado matricial 4x4 --;
 void setlinha( void ){
-    if( linha <= 1 ) linha = 0b1000;
-    else             linha >>= 1;
+    if (linha <= 1)
+        linha = 8;
+    else
+        linha >>= 1;
 }
 char teclado(void){
     int i;
     gpio_set_level(Teclado_SH, 1);
     coluna = -1;
     for( i = 7; i >= 0; i--){
-        if(gpio_get_level(Teclado_RD)== 1){
-            pressionado = '1';
+        if(gpio_get_level(Teclado_RD)== 1)
+        {
             coluna = i;
             if(linha == 1) linha2 = 2;
             if(linha == 2) linha2 = 3;
@@ -39,9 +41,6 @@ char teclado(void){
             if(linha == 8) linha2 = 1;
             tecla = teclas[linha2][coluna];
             ESP_LOGI(TAG, "Captura tecla: %c", tecla);
-        }else
-        {
-            pressionado = '-';
         }
         gpio_set_level(Teclado_WR, (linha >> i) & 1);
         gpio_set_level(Teclado_CLK, 1);

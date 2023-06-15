@@ -50,6 +50,7 @@ void devboardInit(void)
   gpio_set_direction(IO_CLK, GPIO_MODE_OUTPUT);
   esp_rom_gpio_pad_select_gpio(IO_WR);
   gpio_set_direction(IO_WR, GPIO_MODE_OUTPUT);
+  gpio_set_direction(IO_DT_RD, GPIO_MODE_INPUT);
 
   int resetSaida;
   gpio_set_level(IO_WR, 0);
@@ -60,5 +61,27 @@ void devboardInit(void)
   gpio_set_level(IO_SH, 1);
   gpio_set_level(IO_SH, 0);
 }
+
+uint8_t io_le_escreve(uint8_t saidas)
+{
+    int j;
+    uint8_t entradas = 0;
+    gpio_set_level(IO_SH,1);
+    vTaskDelay(10); //vTaskDelay(10 / portTICK_RATE_MS);  
+    for (j = 7; j >= 0; j--)
+    {
+        entradas <<= 1;
+        entradas += gpio_get_level(IO_DT_RD);
+        gpio_set_level(IO_WR, ( saidas >> j ) & 1);
+        gpio_set_level(IO_CLK,1);
+        gpio_set_level(IO_CLK,0);
+    } 
+    gpio_set_level(IO_SH,0);
+    vTaskDelay(10); //vTaskDelay(10 / portTICK_RATE_MS); 
+
+    return entradas;
+
+}
+
 
 #endif  //!__GERAL__H__

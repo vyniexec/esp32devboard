@@ -32,6 +32,7 @@
 #define IO_SH       GPIO_NUM_14                 // -- Pino do registrador de deslocamento (74HC595) saída - SERIAL IN --;
 #define IO_CLK      GPIO_NUM_12                 // -- Pino do registrador de deslocamento (74HC595) saída - CLOCK --;
 #define IO_WR       GPIO_NUM_27                 // -- Pino do registrador de deslocamento (74HC595) saída - LATCH --;
+#define IO_DT_RD    GPIO_NUM_13                 // -- Pino do registrador de deslocamento (74HC595) saída - LATCH --;
 // -- Definindo os pinos do registrador de saídas digitais --;
 #define LCD_SH       GPIO_NUM_5                 // -- Pino do registrador de deslocamento (74HC595) saída - SERIAL IN --;
 #define LCD_CLK      GPIO_NUM_17                 // -- Pino do registrador de deslocamento (74HC595) saída - CLOCK --;
