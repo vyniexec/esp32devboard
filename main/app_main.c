@@ -3,7 +3,7 @@
 #include "includes.h"
 #include "geral.h"
 
-unsigned char *buffer[10];
+unsigned char *buffer1[10];
 
 char letras[10][4] = {
   {'0', ' ', ' ', ' '}, // Tecla 0 não tem letras
@@ -19,36 +19,36 @@ char letras[10][4] = {
 };
 
 // Define uma variável para armazenar a última tecla pressionada
-char lastKey;
+char lastKey = '-';
 
 // Define uma variável para armazenar o índice da letra atual
-int letterIndex = -1;
+int letterIndex;
 
 // Define uma variável para armazenar a tecla pressionada
 char tec;
+char keyFull;
 
 void keyboardFull(void){
-    tec = teclado();
-    printf("%c \n", tec);
-    if(pressionado != '-')                                          // Se alguma tecla for pressionada...
-    {
-        printf("Tecla pressionada \n");
-        if (tec == lastKey){                                        // Se a mesma tecla foi pressionada novamente
-            letterIndex++;                                          // Incrementa o índice da letra
-            printf("Incrementei: %d \n", letterIndex);
-        }
-        if (letterIndex > 3){                                       // Se o índice ultrapassou o limite da matriz
-            letterIndex = -1;                                       // Reseta o índice
-            printf("Resetei o indice \n");                          // Imprime o número
-        } else {                                                    // Se o índice ainda está dentro do limite da matriz
-            printf("Tecla: %c \n", letras[tec - '0'][letterIndex]); // Imprime a letra correspondente ao índice
-            printf("\b");                                           // Apaga o último caractere impresso
-        }
-    } else {                                                        // Se uma tecla diferente foi pressionada
-        letterIndex = -1;                                           // Reseta o índice
-    }
-    lastKey = tec;                                                  // Atualiza a última tecla pressionada
-    vTaskDelay(10);                                                 // Aguarda meio segundo para evitar leituras repetidas
+    tec = teclado();                                                    // Chamando a função do teclado
+    if(coluna != -1){                                                   // Se alguma tecla for pressionada...
+        //printf("Tecla pressionada \n");                               // Imprimi a tecla pressionada
+        if (tecla == lastKey){                                          // Se a mesma tecla foi pressionada novamente
+            letterIndex++;                                              // Incrementa o índice da letra
+        }else letterIndex = 0;                                          // Reseta o índice
+        if (letterIndex > 3){                                           // Se o índice ultrapassou o limite da matriz
+            letterIndex = 0;                                            // Reseta o índice
+            keyFull = letras[tecla - '0'][letterIndex];                 // Armazena na variavel a letra correspondente ao índice
+            printf("Tecla: %c \n", letras[tecla - '0'][letterIndex]);   // Imprime a letra correspondente ao índice
+            sprintf(buffer1, "Tecla: %c ", keyFull);                    // Armazena a letra correspondente ao índice no buffer
+            lcdWrite(1, 0, buffer1);                                    // Escreve no display a tecla correspondente ao índice
+        } else {                                                        // Se o índice ainda está dentro do limite da matriz
+            keyFull = letras[tecla - '0'][letterIndex];                 // Armazena na variavel a letra correspondente ao índice
+            printf("Tecla: %c \n", letras[tecla - '0'][letterIndex]);   // Imprime a letra correspondente ao índice
+            sprintf(buffer1, "Tecla: %c ", keyFull);                    // Armazena a letra correspondente ao índice no buffer
+            lcdWrite(1, 0, buffer1);                                    // Escreve no display a tecla correspondente ao índice
+            printf("\b");                                               // Apaga o último caractere impresso
+    }}
+    if(tecla != lastKey) lastKey = tecla;                               // Atualiza a última tecla pressionada
 }
 
 void keyboard1(void)
@@ -56,6 +56,7 @@ void keyboard1(void)
     while(1)
     {
         keyboardFull();
+        vTaskDelay(10);                                                 // Aguarda 10ms para evitar leituras repetidas
     }
 }
 
