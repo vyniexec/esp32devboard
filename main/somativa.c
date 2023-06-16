@@ -119,9 +119,8 @@ void machineState(void)
     }
 }
 
-void sla(void){
+void machinaClean(void){
     while(1){
-        //outAndInput();
         machineState();
         vTaskDelay(10);
     }
@@ -133,5 +132,5 @@ void app_main( void )
     vTaskDelay(10);
     lcdInit();
     lcdClear();
-    xTaskCreate(&sla, "Leitura", 2048, NULL, 2, NULL);
+    xTaskCreate(&machinaClean, "Leitura", 2048, NULL, 2, NULL);
 }
