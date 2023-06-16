@@ -3,7 +3,7 @@
 #include "includes.h"
 #include "geral.h"
 
-unsigned char *buffer[10];
+unsigned char *buffer2[10];
 int nivelBaixo, nivelAlto, fimCurso, inputs = 0;
 
 void outAndInput(int saida)
@@ -18,85 +18,104 @@ void outAndInput(int saida)
 int state = 0;
 void machineState(void)
 {
-    
     switch ( state )
     {
-    case 0:                                 // Stand-by
+    case 0:                                             // Stand-by
         lcdClear();
-        lcdWrite(0,1,"STAND-BY ");
+        lcdWrite(0, 0,"STAND-BY ");
         vTaskDelay(100);
         outAndInput(0x00);
-        if(fimCurso == 1)state = 1;
+        if(fimCurso == 1)state = 6;
         break;
-    case 1:                                 // Enchendo
+    case 6:
         lcdClear();
-        lcdWrite(0,1,"ENCHENDO ");
-        outAndInput(0b00001000);
-        outAndInput(0x00);
-        vTaskDelay(500);
-        outAndInput(0B10000000);
-        vTaskDelay(500);
-        outAndInput(0B11000000);
-        vTaskDelay(500);
-        outAndInput(0B11100000);
-        vTaskDelay(500);
-        outAndInput(0B11110000);
-        vTaskDelay(100);
-        if(nivelAlto == 1)state = 2;
-        printf("estado: %d \n", state);
+        lcdWrite(0, 0, "DE MOLHO ");
+        for(int i = 99; i >= 0; i--){
+            sprintf(buffer2, "TEMPO: %d ", i);
+            lcdWrite(1, 0, buffer2);
+            vTaskDelay(1);
+        }
+        state = 1;
         break;
-    case 2:                                 // Batendo
+    case 1:                                             // Enchendo
         lcdClear();
-        lcdWrite(0,1,"BATENDO ");
+        lcdWrite(0, 0,"ENCHENDO ");
         outAndInput(0x00);
+        if(nivelAlto == 1){
+            outAndInput(0x80);
+            vTaskDelay(10);
+            outAndInput(0xC0);
+            vTaskDelay(10);
+            outAndInput(0xE0);
+            vTaskDelay(10);
+            outAndInput(0xF0);
+            state = 2;
+        }
+        break;
+    case 2:                                             // Batendo
+        outAndInput(0xF0);
+        lcdClear();
+        lcdWrite(0, 0,"BATENDO ");
         if(nivelAlto == 1){
             for (int i = 7; i >= 0; i--)
             {
-                outAndInput(0b00000001);          // bomba saida
-                vTaskDelay(100 / portTICK_PERIOD_MS);
-                outAndInput(0b00000010);          // bomba saida
+                outAndInput(0b00000001);                // bomba saida
+                vTaskDelay(100);
+                outAndInput(0b00000010);                // bomba saida
             }
             vTaskDelay(100);
             state = 3;
         }
         break;
-    case 3:                                 // Esvaziando
+    case 3:                                             // Esvaziando
         lcdClear();
-        lcdWrite(0,1,"ESVAZIANDO ");
-        outAndInput(0b00000100);          // bomba saida
-        if(nivelAlto == 0)state = 4;
+        lcdWrite(0, 0,"ESVAZIANDO ");
+        if(nivelAlto == 0){
+            outAndInput(0xE0);
+            vTaskDelay(10);
+            outAndInput(0xC0);
+            vTaskDelay(10);
+            outAndInput(0x80);
+            vTaskDelay(10);
+            outAndInput(0x00);
+            vTaskDelay(10);
+            state = 4;
+        }
         break;
-    case 4:                                 // Enxaguando
+    case 4:                                             // Enxaguando
         lcdClear();
-        lcdWrite(0,1,"ENXAGUANDO ");
+        lcdWrite(0, 0,"ENXAGUANDO ");
         outAndInput(0x00);
-        vTaskDelay(500);
-        outAndInput(0B10000000);
-        vTaskDelay(500);
-        outAndInput(0B11000000);
-        vTaskDelay(500);
-        outAndInput(0B11100000);
-        vTaskDelay(500);
-        outAndInput(0B11110000);
         if(nivelAlto == 1){
-            for (int i = 7; i >= 0; i--)
-            {
-                outAndInput(0b11110001);      // bomba saida
-                vTaskDelay(50 / portTICK_PERIOD_MS);
-                outAndInput(0b11110010);      // bomba saida
-            }
+            outAndInput(0x80);
+            vTaskDelay(10);
+            outAndInput(0xC0);
+            vTaskDelay(10);
+            outAndInput(0xE0);
+            vTaskDelay(10);
+            outAndInput(0xF0);
+            vTaskDelay(10);
+            outAndInput(0xE0);
+            vTaskDelay(10);
+            outAndInput(0xC0);
+            vTaskDelay(10);
+            outAndInput(0x80);
+            vTaskDelay(10);
+            outAndInput(0x00);
             state = 5;
         }
         break;
     case 5:
         lcdClear();
-        lcdWrite(0,1,"CENTRIFUGANDO ");
-        for (int i = 50; i >= 0; i--)
-        {
-            outAndInput(0b00000100);         // ligar saida e motor horariio
-            vTaskDelay(100);
+        outAndInput(0x00);
+        lcdWrite(0, 0,"CENTRIFUGANDO ");
+        if(nivelAlto == 0){
+            for (int i = 10; i >= 0; i--)
+            {
+                outAndInput(0b00000010);                    // ligar saida e motor horariio
+                vTaskDelay(10);
+            }
         }
-        if(nivelAlto == 0) state = 0;
     }
 }
 
@@ -111,7 +130,7 @@ void sla(void){
 void app_main( void )
 {
     devboardInit();
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    vTaskDelay(10);
     lcdInit();
     lcdClear();
     xTaskCreate(&sla, "Leitura", 2048, NULL, 2, NULL);
