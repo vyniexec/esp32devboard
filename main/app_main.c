@@ -3,8 +3,7 @@
 #include <string.h>
 #include "includes.h"
 #include "geral.h"
-
-
+// ----------------------------------------------------------------------------------------------------------------------//
 char letras[10][4] = {                                                  // Criando a matriz alphanumerica
   {'0', ' ', ' ', ' '},                                                 // Tecla 0 não tem letras
   {'1', 'A', 'B', 'C'},                                                 // Tecla 1 tem as letras A, B e C
@@ -24,10 +23,10 @@ char lastKey = '-';                                                     // Vari�
 char tec;                                                               // Variável para ler a tecla pressionada
 char keyFull;                                                           // Variável para armazena tecla do indice maisculo
 int letterIndex;                                                        // Variável para incrementar o indice
-unsigned char *buffer1[10];                                             // Variável para armazenar a tecla maisculo para o LCD 
-unsigned char *buffer3[10];                                             // Variável para armazenar a tecla minuscula para o LCD
-
-void keyboardFull(void){
+char *buffer1[10];                                                      // Variável para armazenar a tecla maisculo para o LCD 
+char *buffer3[10];                                                      // Variável para armazenar a tecla minuscula para o LCD
+// ----------------------------------------------------------------------------------------------------------------------//
+char keyboardFull(void){
     tec = teclado();                                                    // Chamando a função do teclado
     if(coluna != -1){                                                   // Se alguma tecla for pressionada...
         if(tecla == 'A'){                                               // Se a tecla pressionada for 'A'
@@ -66,18 +65,26 @@ void keyboardFull(void){
         }
     }
     if(tecla != lastKey) lastKey = tecla;                               // Atualiza a última tecla pressionada
+    return keyFull;                                                     // Retorna um
 }
-
+// ----------------------------------------------------------------------------------------------------------------------//
+char *writeFrase = "";
+void escreve(void){
+    keyboardFull();
+    if(tecla == 'B'){
+        writeFrase[100] = writeFrase + keyFull;
+        printf("Frase: %s", writeFrase);
+    }
+}
+// ----------------------------------------------------------------------------------------------------------------------//
 void keyboard1(void)
 {
     while(1)
     {
-        keyboardFull();                                                 // Chamando a função do teclado alphanumerico
+        escreve();                                                 // Chamando a função do teclado alphanumerico
         vTaskDelay(10);                                                 // Aguarda 10ms para evitar leituras repetidas
     }
 }
-
-
 // -- Função do código principal --;
 void app_main(void)
 {
