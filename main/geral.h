@@ -80,6 +80,14 @@ uint8_t io_le_escreve(uint8_t saidas)
     vTaskDelay(10); //vTaskDelay(10 / portTICK_RATE_MS); 
 
     return entradas;
+    
+    /* == Inicializando o NVS que armazena configurações do ESP32 == */
+    // esp_err_t ret = nvs_flash_init();
+    // if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    //   ESP_ERROR_CHECK(nvs_flash_erase());
+    //   ret = nvs_flash_init();
+    // }
+    // ESP_ERROR_CHECK(ret);
 }
 
 
