@@ -20,7 +20,7 @@ void machineState(void)
 {
     switch ( state )
     {
-    case 0:                                             // Stand-by
+    case 0:
         lcdClear();
         lcdWrite(0, 0,"STAND-BY ");
         vTaskDelay(100);
@@ -30,14 +30,14 @@ void machineState(void)
     case 6:
         lcdClear();
         lcdWrite(0, 0, "DE MOLHO ");
-        for(int i = 99; i >= 0; i--){
+        for(int i = 60; i >= 0; i--){
             sprintf(buffer2, "TEMPO: %d ", i);
             lcdWrite(1, 0, buffer2);
             vTaskDelay(1);
         }
         state = 1;
         break;
-    case 1:                                             // Enchendo
+    case 1:
         lcdClear();
         lcdWrite(0, 0,"ENCHENDO ");
         outAndInput(0x00);
@@ -52,22 +52,22 @@ void machineState(void)
             state = 2;
         }
         break;
-    case 2:                                             // Batendo
+    case 2:
         outAndInput(0xF0);
         lcdClear();
         lcdWrite(0, 0,"BATENDO ");
         if(nivelAlto == 1){
             for (int i = 7; i >= 0; i--)
             {
-                outAndInput(0b00000001);                // bomba saida
-                vTaskDelay(100);
-                outAndInput(0b00000010);                // bomba saida
+                outAndInput(0b11110001);
+                vTaskDelay(10);
+                outAndInput(0b11110010);
             }
             vTaskDelay(100);
             state = 3;
         }
         break;
-    case 3:                                             // Esvaziando
+    case 3:
         lcdClear();
         lcdWrite(0, 0,"ESVAZIANDO ");
         if(nivelAlto == 0){
@@ -82,7 +82,7 @@ void machineState(void)
             state = 4;
         }
         break;
-    case 4:                                             // Enxaguando
+    case 4:
         lcdClear();
         lcdWrite(0, 0,"ENXAGUANDO ");
         outAndInput(0x00);
@@ -94,7 +94,8 @@ void machineState(void)
             outAndInput(0xE0);
             vTaskDelay(10);
             outAndInput(0xF0);
-            vTaskDelay(10);
+            vTaskDelay(100);
+            vTaskDelay(100);
             outAndInput(0xE0);
             vTaskDelay(10);
             outAndInput(0xC0);
@@ -112,9 +113,11 @@ void machineState(void)
         if(nivelAlto == 0){
             for (int i = 10; i >= 0; i--)
             {
-                outAndInput(0b00000010);                    // ligar saida e motor horariio
+                outAndInput(0b00000010);
                 vTaskDelay(10);
             }
+            state = 0;
+            break;
         }
     }
 }

@@ -16,8 +16,7 @@ char letras[10][4] = {                                                  // Crian
   {'8', 'V', 'W', 'X'},                                                 // Tecla 8 tem as letras V, W e X
   {'9', 'Y', 'Z', '*'}                                                  // Tecla 9 tem as letras Y, Z e *
 };
-
-// Definição de variáveis globais
+// ----------------------------------------------------------------------------------------------------------------------//
 bool maisculo = true;                                                   // Variável de verificação se é maisculo ou não
 char lastKey = '-';                                                     // Variável para armazena a ultima tecla pressionada
 char tec;                                                               // Variável para ler a tecla pressionada
@@ -81,11 +80,11 @@ void keyboard1(void)
 {
     while(1)
     {
-        escreve();                                                 // Chamando a função do teclado alphanumerico
+        escreve();                                                      // Chamando a função do teclado alphanumerico
         vTaskDelay(10);                                                 // Aguarda 10ms para evitar leituras repetidas
     }
 }
-// -- Função do código principal --;
+// ----------------------------------------------------------------------------------------------------------------------//
 void app_main(void)
 {
     // connect_wifi();
