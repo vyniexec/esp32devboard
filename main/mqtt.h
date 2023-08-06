@@ -86,7 +86,7 @@ void pubMessage(void *params)
   {
     if(MQTT_CONNEECTED){
         if(test1 == 1){
-            esp_mqtt_client_publish(client, "test/nik", "mensagem", 0, 0, 0);
+            esp_mqtt_client_publish(client, "test/", "mensagem", 0, 0, 0);
             vTaskDelay(500);
         }else ESP_LOGW(TAG1, "test1 = 0");
     }
